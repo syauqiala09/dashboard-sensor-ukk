@@ -26,8 +26,8 @@ if (!authenticated) {
 const CFG = {
   temp: {
     min: 0,   max: 50,
-    warnLo: 15, warnHi: 28,
-    dangerLo: 5, dangerHi: 31,
+    warnLo: 19.9, warnHi: 26,
+    dangerLo: 15, dangerHi: 31,
     color: '#ff6b2b',
     label: 'Suhu (°C)',
   },
@@ -41,8 +41,8 @@ const CFG = {
   // LDR dari Arduino bersifat DIGITAL: 1 = TERANG, 0 = GELAP
   ldr: {
     min: 0,   max: 1,
-    warnLo: -1, warnHi: 2,    // tidak ada zona warning untuk LDR digital
-    dangerLo: 0.5, dangerHi: 2, // nilai 0 (GELAP) → BAHAYA
+    warnLo: 0.5, warnHi: 2,    // nilai 0 (GELAP) → PERINGATAN
+    dangerLo: -1, dangerHi: 2, // Tidak ada zona BAHAYA otomatis untuk LDR digital
     color: '#f5b800',
     label: 'Cahaya (LDR)',
   },
@@ -77,18 +77,18 @@ function getStatus(key, val) {
   const c = CFG[key];
   if (val <= c.dangerLo || val >= c.dangerHi) return 'BAHAYA';
   if (val <= c.warnLo   || val >= c.warnHi)   return 'PERINGATAN';
-  return 'NORMAL';
+  return 'AMAN';
 }
 
 function statusClass(s) {
-  if (s === 'NORMAL')     return 's-normal';
+  if (s === 'AMAN')     return 's-normal';
   if (s === 'PERINGATAN') return 's-warning';
   if (s === 'BAHAYA')     return 's-danger';
   return '';
 }
 
 function statusTdClass(s) {
-  if (s === 'NORMAL')     return 'status-ok';
+  if (s === 'AMAN')     return 'status-ok';
   if (s === 'PERINGATAN') return 'status-warn';;
   if (s === 'BAHAYA')     return 'status-err';
   return '';
@@ -160,11 +160,8 @@ function processIncomingData(data) {
 
   // ── Log entry ─────────────────────────────────────────────
   if (tempVal !== null) {
-    const worstStatus = ['temp','hum','ldr']
-      .map(k => getStatus(k, state[k].current))
-      .filter(s => s !== '—')
-      .sort((a,b) => ({ BAHAYA:2, PERINGATAN:1, NORMAL:0 }[b] - { BAHAYA:2, PERINGATAN:1, NORMAL:0 }[a]))[0]
-      || 'NORMAL';
+    // Mengikuti status suhu saja agar sesuai dengan panel utama
+    const worstStatus = getStatus('temp', state.temp.current) || 'AMAN';
 
     const entry = {
       time  : now,
@@ -259,7 +256,7 @@ function updateCards() {
     if (key === 'temp') {
       const cardTemp = $('card-temp');
       const modal = $('warning-modal');
-      if (val >= 31) {
+      if (val >= CFG.temp.dangerHi) {
         cardTemp.classList.add('blink-red');
         if (!state.tempWarningShown) {
           if (modal) modal.classList.add('show');
