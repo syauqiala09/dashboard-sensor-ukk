@@ -1,0 +1,1333 @@
+/* ============================================
+   SENSORWATCH — NEUBRUTALISM CSS
+   ============================================ */
+
+:root {
+  --bg: #f4f0e6;
+  --surface: #fefcf6;
+  --border: #0d0d0d;
+  --bw: 2.5px;
+  --sh: 4px 4px 0 #0d0d0d;
+  --sh-sm: 2px 2px 0 #0d0d0d;
+  --sh-lg: 6px 6px 0 #0d0d0d;
+
+  --yellow: #ffd400;
+  --orange: #ff6b2b;
+  --blue: #3d7eff;
+  --green: #00d4a0;
+  --red: #ff2b2b;
+  --ink: #0d0d0d;
+  --muted: #666;
+
+  --font: 'Space Grotesk', sans-serif;
+  --mono: 'Space Mono', monospace;
+  --radius: 0px;
+  --gap: 16px;
+  --tr: 0.15s ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ink);
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.app-header {
+  background: var(--ink);
+  color: var(--yellow);
+  border-bottom: var(--bw) solid var(--ink);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  font-size: 28px;
+  line-height: 1;
+  filter: grayscale(0);
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--yellow);
+  line-height: 1.1;
+}
+
+.brand-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--mono);
+  margin-top: 2px;
+  letter-spacing: 0.3px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--green);
+  color: var(--ink);
+  border: var(--bw) solid var(--ink);
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: var(--mono);
+  letter-spacing: 1px;
+  box-shadow: var(--sh-sm);
+  white-space: nowrap;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--ink);
+  border-radius: 50%;
+  animation: blink 1.4s infinite;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.header-time {
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--mono);
+  color: rgba(255, 255, 255, 0.85);
+  min-width: 80px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ============================================
+   MAIN
+   ============================================ */
+.app-main {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ============================================
+   SENSOR CARDS
+   ============================================ */
+.sensor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+
+.sensor-card {
+  border: var(--bw) solid var(--ink);
+  padding: 20px 18px 16px;
+  box-shadow: var(--sh-lg);
+  cursor: default;
+  transition: transform var(--tr), box-shadow var(--tr);
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.sensor-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 var(--ink);
+}
+
+.sensor-card:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.card-temp {
+  background: #fff3e0;
+}
+
+.card-hum {
+  background: #e3eeff;
+}
+
+.card-ldr {
+  background: #fffbe0;
+}
+
+/* Accent stripe */
+.card-temp::before,
+.card-hum::before,
+.card-ldr::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  border-bottom: var(--bw) solid var(--ink);
+}
+
+.card-temp::before {
+  background: var(--orange);
+}
+
+.card-hum::before {
+  background: var(--blue);
+}
+
+.card-ldr::before {
+  background: var(--yellow);
+}
+
+.sensor-icon {
+  font-size: 26px;
+  margin-bottom: 6px;
+  margin-top: 4px;
+}
+
+.sensor-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+.sensor-value {
+  font-size: 48px;
+  font-weight: 800;
+  font-family: var(--mono);
+  letter-spacing: -2px;
+  line-height: 1;
+  margin: 8px 0 2px;
+  transition: color 0.3s;
+}
+
+.sensor-unit {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.sensor-status {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: var(--mono);
+  border: var(--bw) solid var(--ink);
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.s-normal {
+  background: var(--green);
+}
+
+.s-warning {
+  background: var(--yellow);
+}
+
+.s-danger {
+  background: var(--red);
+  color: white;
+}
+
+.sensor-minmax {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  border-top: var(--bw) solid rgba(0, 0, 0, 0.12);
+  padding-top: 10px;
+  font-family: var(--mono);
+}
+
+/* ============================================
+   GAUGE ROW
+   ============================================ */
+.gauge-row {
+  background: var(--surface);
+  border: var(--bw) solid var(--ink);
+  box-shadow: var(--sh);
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+
+.gauge-label {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-family: var(--mono);
+}
+
+.gauge-bar-bg {
+  height: 16px;
+  background: var(--bg);
+  border: var(--bw) solid var(--ink);
+  overflow: hidden;
+}
+
+.gauge-fill {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-right: var(--bw) solid var(--ink);
+}
+
+.fill-temp {
+  background: var(--orange);
+}
+
+.fill-hum {
+  background: var(--blue);
+}
+
+.fill-ldr {
+  background: var(--yellow);
+}
+
+.gauge-range {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ============================================
+   SECTION HEADER
+   ============================================ */
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.section-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+/* ============================================
+   CHART
+   ============================================ */
+.chart-section {
+  background: var(--surface);
+  border: var(--bw) solid var(--ink);
+  box-shadow: var(--sh);
+  padding: 20px;
+}
+
+.chart-tab-group {
+  display: flex;
+  gap: 0;
+}
+
+.ctab {
+  background: var(--bg);
+  border: var(--bw) solid var(--ink);
+  padding: 7px 14px;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--tr);
+  margin-left: -2px;
+  white-space: nowrap;
+}
+
+.ctab:first-child {
+  margin-left: 0;
+}
+
+.ctab:hover {
+  background: var(--yellow);
+  z-index: 1;
+  position: relative;
+}
+
+.ctab.active {
+  background: var(--ink);
+  color: var(--yellow);
+  z-index: 2;
+  position: relative;
+}
+
+.chart-canvas-wrap {
+  width: 100%;
+  height: 220px;
+  position: relative;
+}
+
+#line-chart {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+
+/* ============================================
+   LOG TABLE
+   ============================================ */
+.log-section {
+  background: var(--surface);
+  border: var(--bw) solid var(--ink);
+  box-shadow: var(--sh);
+  padding: 20px;
+}
+
+.btn-export {
+  background: var(--ink);
+  color: var(--yellow);
+  border: var(--bw) solid var(--ink);
+  padding: 8px 16px;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: var(--sh-sm);
+  transition: all var(--tr);
+  white-space: nowrap;
+}
+
+.btn-export:hover {
+  background: var(--green);
+  color: var(--ink);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--sh);
+}
+
+.btn-analisis {
+  background: var(--blue);
+  color: #fff;
+  border: var(--bw) solid var(--ink);
+  padding: 8px 16px;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: var(--sh-sm);
+  transition: all var(--tr);
+  white-space: nowrap;
+}
+
+.btn-analisis:hover {
+  background: var(--ink);
+  color: var(--yellow);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--sh);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.log-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 520px;
+}
+
+.log-table th {
+  background: var(--ink);
+  color: var(--yellow);
+  padding: 9px 12px;
+  text-align: left;
+  font-weight: 700;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: var(--bw) solid var(--ink);
+  white-space: nowrap;
+}
+
+.log-table td {
+  padding: 9px 12px;
+  border: var(--bw) solid rgba(0, 0, 0, 0.15);
+  font-weight: 500;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.log-table tbody tr:hover td {
+  background: var(--yellow) !important;
+}
+
+.log-table tbody tr:nth-child(even) td {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+.log-table tbody tr:first-child td {
+  font-weight: 700;
+  background: rgba(0, 212, 160, 0.15);
+}
+
+.status-ok {
+  color: #006644;
+  font-weight: 800;
+}
+
+.status-warn {
+  color: #7a5100;
+  font-weight: 800;
+}
+
+.status-err {
+  color: #990000;
+  font-weight: 800;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.app-footer {
+  background: var(--surface);
+  border-top: var(--bw) solid var(--ink);
+  padding: 14px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 12.5px;
+  font-family: var(--mono);
+  color: var(--muted);
+  gap: 8px;
+}
+
+.footer-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.footer-copyright {
+  font-weight: 700;
+  color: var(--ink);
+  margin-top: 4px;
+}
+
+/* ============================================
+   TOAST
+   ============================================ */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--ink);
+  color: var(--yellow);
+  border: var(--bw) solid var(--ink);
+  box-shadow: var(--sh-lg);
+  padding: 12px 18px;
+  font-weight: 700;
+  font-size: 13.5px;
+  z-index: 999;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 300px;
+  pointer-events: none;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ============================================
+   LED CONTROL
+   ============================================ */
+.led-section {
+  background: var(--surface);
+  border: var(--bw) solid var(--ink);
+  box-shadow: var(--sh);
+  padding: 20px;
+}
+
+.led-group-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-all-on,
+.btn-all-off {
+  border: var(--bw) solid var(--ink);
+  padding: 7px 16px;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: var(--sh-sm);
+  transition: all var(--tr);
+  white-space: nowrap;
+}
+
+.btn-all-on {
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+.btn-all-on:hover {
+  background: var(--green);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--sh);
+}
+
+.btn-all-off {
+  background: var(--ink);
+  color: #fff;
+}
+
+.btn-all-off:hover {
+  background: var(--red);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--sh);
+}
+
+/* 4-column grid for LEDs */
+.led-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap);
+}
+
+/* LED Card */
+.led-card {
+  border: var(--bw) solid var(--ink);
+  padding: 18px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg);
+  transition: transform var(--tr), box-shadow var(--tr);
+  position: relative;
+}
+
+.led-card.is-on {
+  background: #fffff0;
+  box-shadow: var(--sh);
+}
+
+.led-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--sh);
+}
+
+/* LED Bulb */
+.led-bulb {
+  width: 52px;
+  height: 52px;
+  border: var(--bw) solid var(--ink);
+  border-radius: 50%;
+  background: #ddd;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, box-shadow 0.3s;
+  flex-shrink: 0;
+}
+
+/* Each LED color */
+#led-card-1 .led-bulb {
+  --led-color: #ff4444;
+}
+
+#led-card-2 .led-bulb {
+  --led-color: #3d7eff;
+}
+
+#led-card-3 .led-bulb {
+  --led-color: #00d4a0;
+}
+
+#led-card-4 .led-bulb {
+  --led-color: #ffd400;
+}
+
+.led-card.is-on .led-bulb {
+  background: var(--led-color);
+  box-shadow: 0 0 0 4px var(--led-color, #ffd400),
+    0 0 16px 4px var(--led-color, #ffd400),
+    var(--sh-sm);
+}
+
+.led-glow {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0);
+  transition: background 0.3s;
+}
+
+.led-card.is-on .led-glow {
+  background: rgba(255, 255, 255, 0.45);
+  animation: glow-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* LED Info */
+.led-info {
+  text-align: center;
+  width: 100%;
+}
+
+.led-name {
+  font-size: 15px;
+  font-weight: 800;
+  font-family: var(--mono);
+  letter-spacing: -0.3px;
+}
+
+.led-desc {
+  font-size: 10.5px;
+  color: var(--muted);
+  font-weight: 500;
+  margin-top: 1px;
+  margin-bottom: 6px;
+}
+
+.led-state {
+  display: inline-block;
+  padding: 2px 10px;
+  font-size: 10px;
+  font-weight: 800;
+  font-family: var(--mono);
+  border: var(--bw) solid var(--ink);
+  background: #e0e0e0;
+  letter-spacing: 0.8px;
+  transition: background 0.25s, color 0.25s;
+}
+
+.led-card.is-on .led-state {
+  background: var(--green);
+  color: var(--ink);
+}
+
+/* Toggle Switch */
+.led-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.toggle-track {
+  display: block;
+  width: 52px;
+  height: 28px;
+  background: #ccc;
+  border: var(--bw) solid var(--ink);
+  border-radius: 0;
+  position: relative;
+  transition: background 0.25s;
+  box-shadow: var(--sh-sm);
+}
+
+.led-card.is-on .toggle-track {
+  background: var(--green);
+}
+
+.toggle-thumb {
+  display: block;
+  width: 22px;
+  height: 20px;
+  background: var(--surface);
+  border: var(--bw) solid var(--ink);
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.led-card.is-on .toggle-thumb {
+  transform: translateX(24px);
+}
+
+.led-toggle:focus-visible .toggle-track {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   RESPONSIVE — TABLET
+   ============================================ */
+@media (max-width: 900px) {
+  .app-main {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .sensor-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .sensor-value {
+    font-size: 36px;
+  }
+
+  .gauge-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 14px 16px;
+  }
+
+  .led-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+}
+
+/* ============================================
+   RESPONSIVE — MOBILE
+   ============================================ */
+@media (max-width: 600px) {
+  .app-header {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .brand-name {
+    font-size: 17px;
+  }
+
+  .brand-sub {
+    display: none;
+  }
+
+  .header-time {
+    font-size: 13px;
+    min-width: 0;
+  }
+
+  .app-main {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .sensor-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .sensor-card {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 0 10px;
+    padding: 14px 14px 12px;
+  }
+
+  .sensor-card::before {
+    display: none;
+  }
+
+  .sensor-icon {
+    font-size: 32px;
+    grid-row: 1 / 3;
+    margin: 0;
+    text-align: center;
+  }
+
+  .sensor-label {
+    font-size: 10px;
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .sensor-value {
+    font-size: 40px;
+    letter-spacing: -1.5px;
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+  }
+
+  .sensor-unit {
+    grid-column: 3;
+    grid-row: 2;
+    margin: 0;
+    font-size: 11px;
+  }
+
+  .sensor-status {
+    grid-column: 3;
+    grid-row: 1;
+    margin: 0;
+    font-size: 10px;
+    padding: 2px 7px;
+  }
+
+  .sensor-minmax {
+    grid-column: 1 / -1;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: var(--bw) solid rgba(0, 0, 0, 0.12);
+  }
+
+  .gauge-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .chart-tab-group .ctab {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .chart-canvas-wrap {
+    height: 180px;
+  }
+
+  .section-header {
+    gap: 8px;
+  }
+
+  .app-footer {
+    padding: 12px 16px;
+    font-size: 11px;
+    gap: 8px;
+  }
+
+  .footer-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .footer-copyright {
+    text-align: center;
+  }
+
+  .led-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .led-card {
+    padding: 14px 10px 12px;
+  }
+
+  .led-bulb {
+    width: 42px;
+    height: 42px;
+  }
+
+  .led-group-btns {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* ============================================
+   MQTT CONNECTION BADGE
+   ============================================ */
+.mqtt-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: var(--mono);
+  letter-spacing: 0.8px;
+  border: var(--bw) solid var(--ink);
+  box-shadow: var(--sh-sm);
+  transition: background 0.4s, color 0.4s;
+  white-space: nowrap;
+}
+
+.mqtt-badge.connected {
+  background: var(--green);
+  color: var(--ink);
+}
+
+.mqtt-badge.disconnected {
+  background: var(--red);
+  color: #fff;
+}
+
+.mqtt-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mqtt-badge.connected .mqtt-dot {
+  background: var(--ink);
+  animation: blink 1.4s infinite;
+}
+
+.mqtt-badge.disconnected .mqtt-dot {
+  background: #fff;
+  animation: blink 0.7s infinite;
+}
+
+/* ============================================
+   MODE BUTTON (AUTO / MANUAL)
+   ============================================ */
+.btn-mode {
+  border: var(--bw) solid var(--ink);
+  padding: 7px 16px;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: var(--sh-sm);
+  transition: all var(--tr);
+  white-space: nowrap;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.btn-mode:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--sh);
+  background: var(--yellow);
+}
+
+.btn-mode.active {
+  background: var(--blue);
+  color: #fff;
+}
+
+.btn-mode.active:hover {
+  background: #1a5aff;
+  color: #fff;
+}
+
+.led-toggle:disabled {
+  cursor: not-allowed;
+}
+
+.btn-all-on:disabled,
+.btn-all-off:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: var(--sh-sm) !important;
+}
+
+/* ============================================
+   WARNING MODAL & BLINKING
+   ============================================ */
+.warning-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.warning-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.warning-modal-content {
+  background: var(--surface);
+  border: var(--bw) solid var(--ink);
+  box-shadow: var(--sh-lg);
+  padding: 30px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.warning-modal.show .warning-modal-content {
+  transform: translateY(0);
+}
+
+.warning-modal-content h2 {
+  color: var(--red);
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.warning-modal-content p {
+  font-size: 15px;
+  margin-bottom: 20px;
+  font-family: var(--mono);
+}
+
+@keyframes blinkRed {
+  0% {
+    background-color: #fff3e0;
+  }
+
+  50% {
+    background-color: #ffcccc;
+  }
+
+  100% {
+    background-color: #fff3e0;
+  }
+}
+
+.sensor-card.card-temp.blink-red {
+  animation: blinkRed 0.8s infinite;
+  border-color: var(--red);
+}
+
+/* ============================================
+   LOGIN PAGE
+   ============================================ */
+.login-body {
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.login-container {
+  background: var(--surface);
+  border: var(--bw) solid var(--ink);
+  box-shadow: var(--sh-lg);
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 30px;
+  transition: transform 0.1s;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-header .brand-icon {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.login-title {
+  color: var(--ink);
+  font-size: 28px;
+}
+
+.login-subtitle {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.input-group input {
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 14px;
+  border: var(--bw) solid var(--ink);
+  background: var(--bg);
+  color: var(--ink);
+  outline: none;
+  transition: box-shadow 0.2s, background 0.2s;
+}
+
+.input-group input:focus {
+  background: #fff;
+  box-shadow: 4px 4px 0 var(--blue);
+}
+
+.input-group input::placeholder {
+  color: #999;
+  font-weight: 500;
+}
+
+.btn-login {
+  margin-top: 10px;
+  background: var(--yellow);
+  color: var(--ink);
+  border: var(--bw) solid var(--ink);
+  padding: 14px;
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: var(--sh);
+  transition: all var(--tr);
+}
+
+.btn-login:hover {
+  background: var(--green);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--sh-lg);
+}
+
+.btn-login:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.login-error {
+  background: #ffcccc;
+  color: var(--red);
+  border: var(--bw) solid var(--red);
+  padding: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-10px) rotate(-1deg);
+  }
+
+  75% {
+    transform: translateX(10px) rotate(1deg);
+  }
+}
+
+.login-container.shake {
+  animation: shake 0.3s ease-in-out;
+}

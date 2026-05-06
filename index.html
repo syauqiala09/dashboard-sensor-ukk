@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SensorWatch — Dashboard Monitoring</title>
+  <meta name="description"
+    content="Dashboard monitoring suhu, kelembaban, dan intensitas cahaya LDR secara real-time." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- MQTT.js via CDN — WebSocket support -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="brand-icon">🌡</div>
+      <div>
+        <h1 class="brand-name">SensorWatch</h1>
+        <p class="brand-sub">Monitoring Suhu · Kelembaban · Cahaya</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="mqtt-badge disconnected" id="mqtt-badge" title="Status koneksi MQTT">
+        <span class="mqtt-dot"></span>
+        <span id="mqtt-label">Menghubungkan…</span>
+      </div>
+      <div class="live-badge" id="live-badge">
+        <span class="live-dot"></span>
+        LIVE
+      </div>
+      <div class="header-time" id="header-time">--:--:--</div>
+      <button id="btn-logout" class="btn-all-off" style="padding: 5px 12px; font-size: 11px; margin-left: 4px;">Keluar
+        ➔</button>
+    </div>
+  </header>
+
+  <!-- ── MAIN ── -->
+  <main class="app-main">
+
+    <!-- SENSOR CARDS -->
+    <section class="sensor-grid" aria-label="Sensor utama">
+
+      <div class="sensor-card card-temp" id="card-temp" role="button" tabindex="0" aria-label="Suhu">
+        <div class="sensor-icon">🌡️</div>
+        <div class="sensor-label">Suhu</div>
+        <div class="sensor-value" id="val-temp">--</div>
+        <div class="sensor-unit">°Celsius</div>
+        <div class="sensor-status" id="status-temp">—</div>
+        <div class="sensor-minmax">
+          <span>Min: <b id="min-temp">--</b></span>
+          <span>Max: <b id="max-temp">--</b></span>
+        </div>
+      </div>
+
+      <div class="sensor-card card-hum" id="card-hum" role="button" tabindex="0" aria-label="Kelembaban">
+        <div class="sensor-icon">💧</div>
+        <div class="sensor-label">Kelembaban</div>
+        <div class="sensor-value" id="val-hum">--</div>
+        <div class="sensor-unit">% RH</div>
+        <div class="sensor-status" id="status-hum">—</div>
+        <div class="sensor-minmax">
+          <span>Min: <b id="min-hum">--</b></span>
+          <span>Max: <b id="max-hum">--</b></span>
+        </div>
+      </div>
+
+      <div class="sensor-card card-ldr" id="card-ldr" role="button" tabindex="0" aria-label="Intensitas Cahaya">
+        <div class="sensor-icon">☀️</div>
+        <div class="sensor-label">Cahaya (LDR)</div>
+        <div class="sensor-value" id="val-ldr">--</div>
+        <div class="sensor-unit" id="unit-ldr">Digital</div>
+        <div class="sensor-status" id="status-ldr">—</div>
+        <div class="sensor-minmax">
+          <span>Min: <b id="min-ldr">--</b></span>
+          <span>Max: <b id="max-ldr">--</b></span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- GAUGE ROW -->
+    <section class="gauge-row" aria-label="Indikator level sensor">
+      <div class="gauge-block">
+        <div class="gauge-label">🌡️ Level Suhu</div>
+        <div class="gauge-bar-bg">
+          <div class="gauge-fill fill-temp" id="gauge-temp" style="width:0%"></div>
+        </div>
+        <div class="gauge-range"><span>0°C</span><span>50°C</span></div>
+      </div>
+      <div class="gauge-block">
+        <div class="gauge-label">💧 Level Kelembaban</div>
+        <div class="gauge-bar-bg">
+          <div class="gauge-fill fill-hum" id="gauge-hum" style="width:0%"></div>
+        </div>
+        <div class="gauge-range"><span>0%</span><span>100%</span></div>
+      </div>
+      <div class="gauge-block">
+        <div class="gauge-label">☀️ Level Cahaya</div>
+        <div class="gauge-bar-bg">
+          <div class="gauge-fill fill-ldr" id="gauge-ldr" style="width:0%"></div>
+        </div>
+        <div class="gauge-range"><span>0 Lux</span><span>1000 Lux</span></div>
+      </div>
+    </section>
+
+    <!-- LED CONTROL -->
+    <section class="led-section" aria-label="Kontrol LED">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Kontrol LED</h2>
+          <p class="section-sub">Nyalakan atau matikan LED secara manual</p>
+        </div>
+        <div class="led-group-btns">
+          <button class="btn-mode" id="btn-mode" data-auto="false">⚙ MANUAL</button>
+          <button class="btn-all-on" id="btn-all-on">⚡ Semua ON</button>
+          <button class="btn-all-off" id="btn-all-off">✕ Semua OFF</button>
+        </div>
+      </div>
+
+      <div class="led-grid">
+
+        <div class="led-card" id="led-card-1">
+          <div class="led-bulb" id="led-bulb-1">
+            <div class="led-glow"></div>
+          </div>
+          <div class="led-info">
+            <div class="led-name">LED 1</div>
+            <div class="led-desc">Suhu 20 - 25.9°C</div>
+            <div class="led-state" id="led-state-1">MATI</div>
+          </div>
+          <button class="led-toggle" id="led-btn-1" data-led="1" aria-pressed="false" aria-label="Toggle LED 1">
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+            </span>
+          </button>
+        </div>
+
+        <div class="led-card" id="led-card-2">
+          <div class="led-bulb" id="led-bulb-2">
+            <div class="led-glow"></div>
+          </div>
+          <div class="led-info">
+            <div class="led-name">LED 2</div>
+            <div class="led-desc">Suhu 26 - 30.9°C</div>
+            <div class="led-state" id="led-state-2">MATI</div>
+          </div>
+          <button class="led-toggle" id="led-btn-2" data-led="2" aria-pressed="false" aria-label="Toggle LED 2">
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+            </span>
+          </button>
+        </div>
+
+        <div class="led-card" id="led-card-3">
+          <div class="led-bulb" id="led-bulb-3">
+            <div class="led-glow"></div>
+          </div>
+          <div class="led-info">
+            <div class="led-name">LED 3</div>
+            <div class="led-desc">Suhu &ge; 31°C</div>
+            <div class="led-state" id="led-state-3">MATI</div>
+          </div>
+          <button class="led-toggle" id="led-btn-3" data-led="3" aria-pressed="false" aria-label="Toggle LED 3">
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+            </span>
+          </button>
+        </div>
+
+        <div class="led-card" id="led-card-4">
+          <div class="led-bulb" id="led-bulb-4">
+            <div class="led-glow"></div>
+          </div>
+          <div class="led-info">
+            <div class="led-name">LED 4</div>
+            <div class="led-desc">Kondisi Gelap</div>
+            <div class="led-state" id="led-state-4">MATI</div>
+          </div>
+          <button class="led-toggle" id="led-btn-4" data-led="4" aria-pressed="false" aria-label="Toggle LED 4">
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+            </span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CHART -->
+    <section class="chart-section" aria-label="Grafik riwayat sensor">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Grafik Riwayat</h2>
+          <p class="section-sub">Data 20 pembacaan terakhir</p>
+        </div>
+        <div class="chart-tab-group" role="group" aria-label="Pilih sensor">
+          <button class="ctab active" id="ctab-temp" data-sensor="temp">🌡️ Suhu</button>
+          <button class="ctab" id="ctab-hum" data-sensor="hum">💧 Kelembaban</button>
+          <button class="ctab" id="ctab-ldr" data-sensor="ldr">☀️ Cahaya</button>
+        </div>
+      </div>
+      <div class="chart-canvas-wrap">
+        <canvas id="line-chart"></canvas>
+      </div>
+    </section>
+
+    <!-- LOG TABLE -->
+    <section class="log-section" aria-label="Riwayat log pembacaan">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Log Pembacaan</h2>
+          <p class="section-sub">10 data terbaru</p>
+        </div>
+        <div class="log-actions" style="display: flex; gap: 8px;">
+          <a href="https://colab.research.google.com/drive/1G_rXcYLQF_OIwxT331YazMmgBB8SZk9Q?usp=sharing" target="_blank" class="btn-analisis" id="btn-analisis" style="text-decoration: none; display: inline-flex; align-items: center;">📊 Analisis</a>
+          <button class="btn-export" id="btn-export">⬇ Ekspor CSV</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="log-table" id="log-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Waktu</th>
+              <th>🌡️ Suhu (°C)</th>
+              <th>💧 Kelembaban (%)</th>
+              <th>☀️ Cahaya (Lux)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="log-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer class="app-footer">
+    <div class="footer-info">
+      <span>Update otomatis setiap <b>3 detik</b></span>
+      <span id="last-update">Terakhir diperbarui: —</span>
+    </div>
+    <div class="footer-copyright">
+      &copy; 2026 SensorWatch Dashboard.
+    </div>
+  </footer>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <!-- WARNING MODAL -->
+  <div class="warning-modal" id="warning-modal" role="dialog" aria-modal="true" aria-labelledby="warning-modal-title">
+    <div class="warning-modal-content">
+      <h2 id="warning-modal-title">⚠️ PERINGATAN SUHU!</h2>
+      <p>Suhu saat ini telah mencapai batas 31°C atau lebih.</p>
+      <button id="warning-close-btn" class="btn-all-off">Tutup Peringatan</button>
+    </div>
+  </div>
+
+  <script src="services/mqtt.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
