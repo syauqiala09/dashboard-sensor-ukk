@@ -562,6 +562,100 @@ body {
 }
 
 /* ============================================
+   MOBILE APP DOWNLOAD PANEL
+   ============================================ */
+.app-download-section {
+  margin-bottom: 20px;
+}
+
+.download-card {
+  background: var(--blue);
+  color: #fff;
+  border: var(--bw) solid var(--ink);
+  box-shadow: var(--sh);
+  padding: 24px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.download-content {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.download-icon {
+  font-size: 42px;
+  background: #fff;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--bw) solid var(--ink);
+  box-shadow: var(--sh-sm);
+}
+
+.download-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.download-sub {
+  font-size: 13px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.btn-download {
+  background: var(--yellow);
+  color: var(--ink);
+  border: var(--bw) solid var(--ink);
+  padding: 12px 24px;
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: var(--sh-sm);
+  transition: all var(--tr);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-download:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: var(--sh);
+  background: var(--green);
+}
+
+.btn-download .btn-icon {
+  font-size: 18px;
+}
+
+@media (max-width: 600px) {
+  .download-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  .download-content {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .btn-download {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ============================================
    FOOTER
    ============================================ */
 .app-footer {
